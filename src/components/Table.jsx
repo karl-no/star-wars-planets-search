@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import StarWarsPlanetsContext from '../context/StarWarsPlanetsContext';
+import Header from './Header';
 
 function Table() {
   const { planets, getPlanets } = useContext(StarWarsPlanetsContext);
@@ -27,6 +28,7 @@ function Table() {
   return (
     <main>
       <h1>STAR WARS</h1>
+      <Header />
       <table>
         <thead>
           <tr>
