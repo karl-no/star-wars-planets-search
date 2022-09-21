@@ -6,7 +6,10 @@ import starWarsAPI from '../services/starWarsPlanetsAPI';
 function Provider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [planetsOriginal, setPlanetsOriginal] = useState([]);
-  const [filters, setFilters] = useState({ filterByName: { name: '' } });
+  const [filters, setFilters] = useState({
+    filterByName: { name: '' },
+    filterByNumericValues: [],
+  });
 
   const getPlanets = async () => {
     const response = await starWarsAPI();
@@ -34,11 +37,38 @@ function Provider({ children }) {
     }
   };
 
+  const handleInputFilterNumericValue = (filter) => {
+    let filteredPlanets = [];
+    if (filter.comparison === 'maior que') {
+      filteredPlanets = planets.filter(
+        (planet) => Number(planet[filter.column]) > +filter.value,
+      );
+    } else if (filter.comparison === 'menor que') {
+      filteredPlanets = planets.filter(
+        (planet) => Number(planet[filter.column]) < +filter.value,
+      );
+    } else if (filter.comparison === 'igual a') {
+      filteredPlanets = planets.filter(
+        (planet) => Number(planet[filter.column]) === +filter.value,
+      );
+    }
+    setPlanets(filteredPlanets);
+  };
+
+  const setNewNumericFilter = (filterValue) => {
+    setFilters((prevState) => ({
+      ...prevState,
+      filterByNumericValues: [...prevState.filterByNumericValues, filterValue],
+    }));
+    handleInputFilterNumericValue(filterValue);
+  };
+
   const context = {
     planets,
     getPlanets,
     filters,
     handleFilterName,
+    setNewNumericFilter,
   };
 
   return (
