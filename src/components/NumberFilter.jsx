@@ -1,26 +1,26 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import StarWarsPlanetsContext from '../context/StarWarsPlanetsContext';
 
 function NumberFilter() {
-  const { setNewNumericFilter } = useContext(StarWarsPlanetsContext);
+  const {
+    setNewNumericFilter,
+    numericFilterOptions,
+  } = useContext(StarWarsPlanetsContext);
 
   const [filterNumber, setFilterNumber] = useState({
     column: 'population',
     comparison: 'maior que',
     value: '0',
   });
-  const [change] = useState([]);
-  const [columnsNames] = useState([
-    'population',
-    'diameter',
-    'orbital_period',
-    'rotation_period',
-    'surface_water',
-  ]);
 
   const setNumberFilter = () => {
     setNewNumericFilter(filterNumber);
   };
+
+  useEffect(() => setFilterNumber((previousState) => ({
+    ...previousState,
+    column: numericFilterOptions[0],
+  })), [numericFilterOptions]);
 
   const handleFilter = (target) => {
     setFilterNumber({
@@ -39,17 +39,9 @@ function NumberFilter() {
         value={ filterNumber.column }
         onChange={ (event) => handleFilter(event.target) }
       >
-        {/* <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option> */}
-        { columnsNames.map((column) => {
-          if (!change.some((filter) => filter.column === column)) {
-            return <option key={ column } value={ column }>{column}</option>;
-          }
-          return '';
-        })}
+        { numericFilterOptions.map((option) => (
+          <option key={ option } value={ option }>{option}</option>
+        ))}
       </select>
 
       <select

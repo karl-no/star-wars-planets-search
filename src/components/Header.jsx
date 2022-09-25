@@ -1,4 +1,5 @@
 import React from 'react';
+import ChosenFilter from './ChosenFilter';
 import NumberFilter from './NumberFilter';
 import PlanetFilter from './PlanetFilter';
 
@@ -7,6 +8,7 @@ function Header() {
     <section>
       <PlanetFilter />
       <NumberFilter />
+      <ChosenFilter />
     </section>
   );
 }
