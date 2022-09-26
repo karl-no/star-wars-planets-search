@@ -68,17 +68,47 @@ test('Se é possível filtrar a partir de um número no input "value-filter"', a
   const columnSelect = await screen.getByTestId('column-filter');
   const comparisonSelect = await screen.getByTestId('comparison-filter');
   const valueSelect = await screen.getByTestId('value-filter');
-  const buttonFiltet = await screen.getByTestId('button-filter');
+  const buttonFilter = await screen.getByTestId('button-filter');
 
   userEvent.selectOptions(columnSelect, 'population');
   userEvent.selectOptions(comparisonSelect, 'maior que');
   userEvent.clear(valueSelect);
   userEvent.type(valueSelect, '200000');
-  userEvent.click(buttonFiltet);
+  userEvent.click(buttonFilter);
 
   const rowFiltered = await screen.getAllByRole('row');
   await waitFor(() => expect(rowFiltered.length).toBe(7));
 
+});
+
+test('Se é possível deletar um filtro previamente configurado', async () => {
+  global.fetch = jest.fn(async () => ({
+    json: async () => testData,
+  }));
+  render(<App />);
+  await waitFor(() => expect(global.fetch).toBeCalled());
+
+  const columnSelect = await screen.getByTestId('column-filter');
+  const comparisonSelect = await screen.getByTestId('comparison-filter');
+  const valueSelect = await screen.getByTestId('value-filter');
+  const buttonFilter = await screen.getByTestId('button-filter');
+
+  userEvent.selectOptions(columnSelect, 'population');
+  userEvent.selectOptions(comparisonSelect, 'menor que');
+  userEvent.clear(valueSelect);
+  userEvent.type(valueSelect, '100000');
+  userEvent.click(buttonFilter);
+
+  const rowFiltered = await screen.getAllByRole('row');
+  await waitFor(() => expect(rowFiltered.length).toBe(2));
+
+  const deleteFilter = await screen.getByRole('button', { name: /apagar/i })
+  expect(deleteFilter).toBeInTheDocument()
+  userEvent.click(deleteFilter);
+
+  const rowToDelete = screen.getAllByRole('row');
+  // console.log(rowToDelete.length);
+  expect(rowToDelete.length).toBe(11);
 });
   
 });
